@@ -19,17 +19,41 @@ from linebot.users import UserProfile
 class LineBotClient():
     def __init__(
         self,
+        bot_type=constants.BotType.TRIAL,
         api_base_url=constants.API_URL_BASE,
         api_version=constants.API_VERSION,
         **credentials
     ):
-        self.__base_url = api_base_url
+        self.__base_url = self.__get_base_url(bot_type, api_base_url)
         self.__base_url = self.__generate_url(api_version)
-        self.credentials = {
-            'X-Line-ChannelID': credentials['channel_id'],
-            'X-Line-ChannelSecret': credentials['channel_secret'],
-            'X-Line-Trusted-User-With-ACL': credentials['channel_mid'],
+        if bot_type == constants.BotType.TRIAL:
+            self.credentials = {
+                'X-Line-ChannelID': credentials['channel_id'],
+                'X-Line-ChannelSecret': credentials['channel_secret'],
+                'X-Line-Trusted-User-With-ACL': credentials['channel_mid'],
+            }
+        elif bot_type == constants.BotType.BUSINESS:
+            self.credentials = {
+                'X-Line-ChannelSecret': credentials['channel_secret'],
+                'X-LINE-ChannelToken': credentials['channel_token'],
+            }
+        else:
+            raise ValueError('Invalid argument, bot_type: %s' % bot_type)
+
+    def __get_base_url(self, bot_type, api_base_url):
+        url_dict = {
+            constants.BotType.TRIAL: constants.API_URL_BASE,
+            constants.BotType.BUSINESS: constants.BUSINESS_API_URL_BASE
         }
+        if  api_base_url != constants.API_URL_BASE and\
+            api_base_url != constants.BUSINESS_API_URL_BASE:
+            return api_base_url
+        else:
+            if bot_type in url_dict:
+                return url_dict.get(bot_type)
+            else:
+                raise ValueError('Invalid argument, bot_type: %s' % bot_type)
+
 
     def __generate_url(self, *paths):
         parsed_url = urlparse(self.__base_url)

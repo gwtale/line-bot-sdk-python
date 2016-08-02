@@ -3,9 +3,13 @@
 import enum
 
 API_URL_BASE = 'https://trialbot-api.line.me'
+BUSINESS_API_URL_BASE = 'https://api.line.me'
 API_VERSION = 'v1'
 TO_CHANNEL = 1383378250
 
+class BotType(enum.IntEnum):
+    TRIAL = 1
+    BUSINESS = 2
 
 class ContentType(enum.IntEnum):
     TEXT = 1
