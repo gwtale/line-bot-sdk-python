@@ -8,8 +8,8 @@ API_VERSION = 'v1'
 TO_CHANNEL = 1383378250
 
 class BotType(enum.IntEnum):
-    TRIAL = 1
-    BUSINESS = 2
+    TRIAL = 'TRIAL'
+    BUSINESS = 'BUSINESS'
 
 class ContentType(enum.IntEnum):
     TEXT = 1
